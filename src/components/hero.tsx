@@ -46,20 +46,30 @@ export function Hero() {
               Empezar ahora
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
+            
+            <button
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-primary/20 bg-background hover:bg-accent transition-colors"
+              onClick={() => {
+                // Add demo functionality here
+              }}
+            >
+              Ver demo
+              <Play className="ml-2 h-5 w-5" />
+            </button>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 pt-8 border-t border-border/40">
             <div>
-              <h3 className="text-3xl font-bold">1</h3>
+              <h3 className="text-3xl font-bold">10k+</h3>
               <p className="text-foreground/60">Artistas</p>
             </div>
             <div>
-              <h3 className="text-3xl font-bold">0</h3>
+              <h3 className="text-3xl font-bold">50k+</h3>
               <p className="text-foreground/60">Tracks</p>
             </div>
             <div>
-              <h3 className="text-3xl font-bold">0</h3>
+              <h3 className="text-3xl font-bold">100k+</h3>
               <p className="text-foreground/60">Oyentes</p>
             </div>
           </div>
