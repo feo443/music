@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
-import { Upload, Disc, Radio, Coins, Crown, Shield, Twitter, Instagram, Facebook, Youtube, ArrowRight } from "lucide-react";
+import { Upload, Disc, Radio, Coins, Crown, Shield, Twitter, Instagram, Facebook, Youtube } from "lucide-react";
 
 export default function Home() {
   return (

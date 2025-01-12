@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ 
@@ -65,7 +65,7 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: "Error inesperado" }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Error inesperado" }, { status: 500 });
   }
 } 
