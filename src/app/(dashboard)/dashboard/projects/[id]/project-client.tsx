@@ -255,7 +255,7 @@ export default function ProjectClient({ id }: { id: string }) {
       // Si es la misma pista, solo cambiamos el estado de reproducción
       setPlayer(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
       if (audioRef.current) {
-        player.isPlaying ? audioRef.current.pause() : audioRef.current.play();
+        return player.isPlaying ? audioRef.current.pause() : audioRef.current.play();
       }
     } else {
       // Si es una pista diferente, la cargamos y reproducimos
