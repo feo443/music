@@ -767,7 +767,10 @@ export default function ProjectClient({ id }: { id: string }) {
                         <div 
                           ref={menuRef}
                           className="w-[300px] bg-[#1A1A1A] rounded-lg shadow-xl"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                          }}
                         >
                           <div className="p-4 border-b border-white/10">
                             <h3 className="text-lg font-medium text-white">Track options</h3>
@@ -908,7 +911,10 @@ export default function ProjectClient({ id }: { id: string }) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div 
             className="w-[400px] bg-[#1A1A1A] rounded-lg shadow-xl"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
           >
             <div className="p-4 border-b border-white/10">
               <h3 className="text-lg font-medium text-white">Purchase Track</h3>
