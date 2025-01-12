@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface Notification {
@@ -20,12 +20,7 @@ export function useNotifications(userId: string) {
   const [unreadCount, setUnreadCount] = useState(0);
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    if (!userId) return;
-    fetchNotifications();
-  }, [userId]);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('notifications')
@@ -42,7 +37,12 @@ export function useNotifications(userId: string) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase, userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    fetchNotifications();
+  }, [userId, fetchNotifications]);
 
   const markAsRead = async (notificationId: string) => {
     try {

@@ -2,7 +2,6 @@
 
 import { ArrowRight, Play, Waves } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 export function Hero() {
   return (

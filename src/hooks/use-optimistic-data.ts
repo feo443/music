@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useErrorHandler } from './use-error-handler';
 
 interface OptimisticOptions<T> {

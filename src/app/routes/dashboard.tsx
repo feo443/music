@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Dashboard() {
-  const { projects, session } = useLoaderData<typeof loader>();
+  const { projects } = useLoaderData<typeof loader>();
 
   return (
     <div className="min-h-screen bg-[#121212] text-white">
