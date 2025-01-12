@@ -1,18 +1,20 @@
+import { Metadata } from "next";
 import ProjectClient from "./project-client";
-import { Metadata } from 'next';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+interface PageProps {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> | undefined;
+}
 
-export const metadata: Metadata = {
-  title: 'Project Details'
-};
-
-export default async function ProjectPage({ params }: Props) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  
-  return <ProjectClient id={resolvedParams.id} />;
+  return {
+    title: `Project ${resolvedParams.id} - Details`,
+  };
+}
+
+export default async function Page(props: PageProps) {
+  const params = await props.params;
+  const searchParams = props.searchParams ? await props.searchParams : undefined;
+  return <ProjectClient id={params.id} />;
 }

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    appDir: true,
-  },
   // Configuración de imágenes para Supabase
   images: {
     domains: ['uhbyeuaiulxqlrhexwue.supabase.co']
