@@ -6,7 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { ErrorBoundary } from "@/components/error-boundary";

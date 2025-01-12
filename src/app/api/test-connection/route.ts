@@ -6,13 +6,13 @@ export async function GET() {
     const { data, error } = await supabase.from("users").select("*").limit(1);
     
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      throw error;
     }
 
     return NextResponse.json({ message: "Connection successful", data });
-  } catch (error) {
+  } catch (err) {
     return NextResponse.json(
-      { error: "Failed to connect to Supabase" },
+      { error: err instanceof Error ? err.message : "Failed to connect to Supabase" },
       { status: 500 }
     );
   }
