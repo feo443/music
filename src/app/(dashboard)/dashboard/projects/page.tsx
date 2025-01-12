@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { ArrowLeft, Plus, MoreVertical, FolderInput, Download, Trash2 } from "lucide-react";
 import Link from "next/link";
+import Image from 'next/image';
 
 interface Project {
   id: string;
@@ -69,8 +70,8 @@ export default function ProjectsPage() {
       if (data) {
         router.push(`/dashboard/projects/${data.id}`);
       }
-    } catch (error: any) {
-      console.error("Error creating project:", error.message);
+    } catch (error: unknown) {
+      console.error("Error creating project:", error instanceof Error ? error.message : error);
     }
   };
 
@@ -80,18 +81,18 @@ export default function ProjectsPage() {
     setOpenMenuId(openMenuId === projectId ? null : projectId);
   };
 
-  const handleMoveProject = (e: React.MouseEvent, projectId: string) => {
+  const handleMoveProject = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setOpenMenuId(null);
-    // Implementar mover proyecto
+    // TODO: Implementar mover proyecto
   };
 
-  const handleExportProject = (e: React.MouseEvent, projectId: string) => {
+  const handleExportProject = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setOpenMenuId(null);
-    // Implementar exportar proyecto
+    // TODO: Implementar exportar proyecto
   };
 
   const handleDeleteProject = async (e: React.MouseEvent, projectId: string) => {
@@ -163,9 +164,11 @@ export default function ProjectsPage() {
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-md overflow-hidden">
                         {project.cover_url ? (
-                          <img 
+                          <Image 
                             src={project.cover_url} 
                             alt={project.name}
+                            width={32}
+                            height={32}
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -196,14 +199,14 @@ export default function ProjectsPage() {
                 {openMenuId === project.id && (
                   <div className="project-menu absolute right-0 top-12 z-10 w-48 bg-[#1A1A1A] rounded-lg shadow-lg py-1 text-sm">
                     <button
-                      onClick={(e) => handleMoveProject(e, project.id)}
+                      onClick={(e) => handleMoveProject(e)}
                       className="w-full px-4 py-2 flex items-center gap-2 text-white hover:bg-white/5"
                     >
                       <FolderInput className="h-4 w-4" />
                       Move project
                     </button>
                     <button
-                      onClick={(e) => handleExportProject(e, project.id)}
+                      onClick={(e) => handleExportProject(e)}
                       className="w-full px-4 py-2 flex items-center gap-2 text-white hover:bg-white/5"
                     >
                       <Download className="h-4 w-4" />
