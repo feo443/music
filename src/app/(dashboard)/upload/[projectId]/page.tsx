@@ -7,7 +7,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Session } from "@supabase/supabase-js";
 
-export default function ProjectPage({ params }: { params: { projectId: string } }) {
+interface PageProps {
+  params: {
+    projectId: string;
+  };
+}
+
+export default function ProjectPage({ params }: PageProps) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const [session, setSession] = useState<Session | null>(null);
