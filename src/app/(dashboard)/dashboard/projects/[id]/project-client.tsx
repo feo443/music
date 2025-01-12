@@ -83,6 +83,8 @@ export default function ProjectClient({ id }: { id: string }) {
   });
   const audioInputRef = useRef<HTMLInputElement>(null);
   const [trackDurations, setTrackDurations] = useState<{[key: string]: number}>({});
+  const [editingTrackId, setEditingTrackId] = useState<string | null>(null);
+  const [newTrackName, setNewTrackName] = useState("");
 
   useEffect(() => {
     const getSession = async () => {
@@ -469,6 +471,129 @@ export default function ProjectClient({ id }: { id: string }) {
     Object.values(trackDurations).reduce((sum, duration) => sum + duration, 0)
   );
 
+  const handleEditTrackName = async (trackId: string) => {
+    const track = tracks.find(t => t.id === trackId);
+    if (!track) return;
+    
+    setEditingTrackId(trackId);
+    setNewTrackName(track.name);
+    setTrackMenu({ isOpen: false, trackId: null });
+  };
+
+  const handleSaveTrackName = async () => {
+    if (!editingTrackId || !newTrackName.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from('tracks')
+        .update({ name: newTrackName.trim() })
+        .eq('id', editingTrackId);
+
+      if (error) throw error;
+
+      setTracks(tracks.map(track => 
+        track.id === editingTrackId 
+          ? { ...track, name: newTrackName.trim() } 
+          : track
+      ));
+      setEditingTrackId(null);
+      setNewTrackName("");
+    } catch (error) {
+      console.error('Error updating track name:', error);
+    }
+  };
+
+  const handleReplaceAudio = async (trackId: string) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'audio/*';
+    
+    input.onchange = async (e) => {
+      const target = e.target as HTMLInputElement;
+      if (!target.files || target.files.length === 0) return;
+
+      const file = target.files[0];
+      if (!file.type.startsWith('audio/')) {
+        alert('Please upload an audio file');
+        return;
+      }
+
+      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+        alert('File size must be less than 50MB');
+        return;
+      }
+
+      try {
+        const track = tracks.find(t => t.id === trackId);
+        if (!track) return;
+
+        // Delete old file
+        const oldFileName = track.url.split('/').pop();
+        if (oldFileName) {
+          await supabase.storage
+            .from('tracks')
+            .remove([`${session?.user?.id}/${oldFileName}`]);
+        }
+
+        // Upload new file
+        const fileName = `${session?.user?.id}/${Date.now()}-${file.name}`;
+        const { error: uploadError, data } = await supabase.storage
+          .from('tracks')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        if (data) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('tracks')
+            .getPublicUrl(fileName);
+
+          // Update track record
+          const { error: updateError } = await supabase
+            .from('tracks')
+            .update({ 
+              url: publicUrl,
+              name: file.name 
+            })
+            .eq('id', trackId);
+
+          if (updateError) throw updateError;
+
+          // Update local state
+          setTracks(tracks.map(t => 
+            t.id === trackId 
+              ? { ...t, url: publicUrl, name: file.name }
+              : t
+          ));
+        }
+
+        setTrackMenu({ isOpen: false, trackId: null });
+      } catch (error) {
+        console.error('Error replacing audio:', error);
+      }
+    };
+
+    input.click();
+  };
+
+  const handleDownload = async (track: Track) => {
+    try {
+      const response = await fetch(track.url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = track.name;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTrackMenu({ isOpen: false, trackId: null });
+    } catch (error) {
+      console.error('Error downloading track:', error);
+    }
+  };
+
   if (!session || !project) {
     return null;
   }
@@ -600,7 +725,25 @@ export default function ProjectClient({ id }: { id: string }) {
                       </button>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-white">{track.name}</p>
+                      {editingTrackId === track.id ? (
+                        <input
+                          type="text"
+                          value={newTrackName}
+                          onChange={(e) => setNewTrackName(e.target.value)}
+                          onBlur={handleSaveTrackName}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveTrackName();
+                            if (e.key === 'Escape') {
+                              setEditingTrackId(null);
+                              setNewTrackName("");
+                            }
+                          }}
+                          className="flex-1 bg-transparent text-sm text-white border-none focus:outline-none focus:ring-0"
+                          autoFocus
+                        />
+                      ) : (
+                        <p className="text-sm text-white">{track.name}</p>
+                      )}
                       <p className="text-xs text-white/50">12 hours ago</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -632,21 +775,21 @@ export default function ProjectClient({ id }: { id: string }) {
                           <div className="p-2">
                             <button
                               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-white hover:bg-white/10 rounded-lg"
-                              onClick={() => {/* Implementar edición */}}
+                              onClick={() => handleEditTrackName(track.id)}
                             >
                               <Pencil className="h-4 w-4" />
                               Edit name
                             </button>
                             <button
                               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-white hover:bg-white/10 rounded-lg"
-                              onClick={() => {/* Implementar reemplazo */}}
+                              onClick={() => handleReplaceAudio(track.id)}
                             >
                               <Replace className="h-4 w-4" />
                               Replace audio
                             </button>
                             <button
                               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-white hover:bg-white/10 rounded-lg"
-                              onClick={() => {/* Implementar descarga */}}
+                              onClick={() => handleDownload(track)}
                             >
                               <Download className="h-4 w-4" />
                               Download
