@@ -4,7 +4,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { ArrowLeft, Plus, ArrowUpRight, MoreVertical, FolderInput, Download, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, MoreVertical, FolderInput, Download, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 interface Project {

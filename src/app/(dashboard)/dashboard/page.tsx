@@ -4,7 +4,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { ArrowLeft, ArrowUpRight, Settings } from "lucide-react";
+import { ArrowUpRight, Settings } from "lucide-react";
 import Link from "next/link";
 import Image from 'next/image';
 

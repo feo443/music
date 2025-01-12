@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { Session } from '@supabase/supabase-js';
 import { 
   ArrowLeft, 
   MoreVertical, 
@@ -58,7 +59,7 @@ interface PaymentModalState {
 
 export default function ProjectClient({ id }: { id: string }) {
   const supabase = createClientComponentClient();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [project, setProject] = useState<Project | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [isHovering, setIsHovering] = useState(false);

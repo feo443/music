@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { Camera } from 'lucide-react';
 import Image from 'next/image';
@@ -16,7 +17,7 @@ interface Profile {
 export default function EditProfilePage() {
   const supabase = createClientComponentClient();
   const router = useRouter();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
